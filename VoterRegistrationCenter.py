@@ -2,6 +2,8 @@
 #voterSerialize -> serializes voter object to external file
 #registerVoter -> retrieve information from person, create new Voter
 #authenticateVoter -> compare license number entered to saved license number to see if previously registered
+#Tutorials Used: https://towardsdatascience.com/what-why-and-how-of-de-serialization-in-python-2d4c3b622f6b
+
 
 #imports
 import pickle
@@ -12,7 +14,6 @@ import csv
 class VoterRegistrationCenter:
    #voterSerialize method - save voter object to external file
    def voterSerialize(self, registeredVoter):
-     #registeredVoter = Voter()
      filehandler = open('registeredVoters.obj', 'wb')
      pickle.dump(registeredVoter, filehandler)
        
@@ -35,20 +36,17 @@ class VoterRegistrationCenter:
         print(newVoter._party)
         self.voterSerialize(newVoter)
 
-   #authenticateVoter method - check if license number in csv file
+   #authenticateVoter method - check if license number in obj file
    def authenticateVoter(self, license):
-      registeredUser = False
-      with open('userData.csv') as userDataFile:
-        csv_reader = csv.reader(userDataFile, delimiter=',')
-        for row in csv_reader:
-          if(int(row[2]) == license):
-            registeredUser = True
-      if(registeredUser == True):
-        print("True")
-        return True
-      else:
-        print("False")
-        return False
+      with open('registeredVoters.obj', 'rb') as out:
+        assert type(pickle.load(out)) == Voter
+        if (Voter.get_licensenumber == license):
+          print("True")
+          registeredUser = True
+        else:
+          print("False")
+          registeredUser = False
+        return registeredUser
 
 #test VoterRegistrationCenter methods
 vrc = VoterRegistrationCenter()        
