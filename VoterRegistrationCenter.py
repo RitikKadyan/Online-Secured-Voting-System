@@ -7,7 +7,7 @@
 
 #imports
 import pickle
-from Voter import Voter
+from voter import Voter
 import csv
 
 #define class
@@ -27,7 +27,7 @@ class VoterRegistrationCenter:
         newVoter = Voter()
         newVoter.set_firstname(userFirstName)
         newVoter.set_lastname(userLastName)
-        newVoter.set_licensenumber(userLicense)
+        newVoter.set_licencenumber(userLicense)
         newVoter.set_party(userParty)
         newVoter.set_isadmin(userIsAdmin)
         print(newVoter._firstname)
@@ -38,15 +38,18 @@ class VoterRegistrationCenter:
 
    #authenticateVoter method - check if license number in obj file
    def authenticateVoter(self, license):
-      with open('registeredVoters.obj', 'rb') as out:
-        assert type(pickle.load(out)) == Voter
-        if (Voter.get_licensenumber == license):
-          print("True")
-          registeredUser = True
-        else:
-          print("False")
-          registeredUser = False
-        return registeredUser
+        with open('registeredVoters.obj', 'rb') as out:
+            currVoter = pickle.load(out)  #Loops through voter objects from the file
+            if (int(currVoter.get_licensenumber()) == int(license)):
+                print("Registered")
+                registeredUser = True
+                return registeredUser
+            else:
+                registeredUser = False
+                
+        if(registeredUser == False):
+            print("Not registered")
+        
 
 #test VoterRegistrationCenter methods
 vrc = VoterRegistrationCenter()        
