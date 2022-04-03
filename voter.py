@@ -22,7 +22,7 @@ class Voter:
     def get_licensenumber(self):
         return self._licensenumber
     
-    def set_licencenumber(self, x):
+    def set_licensenumber(self, x):
         self._licensenumber = x
 
     def get_party(self):
