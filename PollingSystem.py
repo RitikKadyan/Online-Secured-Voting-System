@@ -38,6 +38,9 @@ def setVote(license, vote):
 		if (int(currVoter.get_licenseNumber()) == int(license)):
 			currVoter.set_party(vote)
 			voterSerialize(currVoter)
+			file = open('registeredVoters.obj', 'wb')
+			pickle.dump(currVoter, file)
+			file.close()
 
 def main():
 	askParty(123456789)

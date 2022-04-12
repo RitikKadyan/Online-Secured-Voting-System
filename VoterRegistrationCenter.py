@@ -8,49 +8,71 @@
 #imports
 import pickle
 from Voter import Voter
-import csv
 
 #voterSerialize method - save voter object to external file
 def voterSerialize(registeredVoter):
     filehandler = open('registeredVoters.obj', 'wb')
     pickle.dump(registeredVoter, filehandler)
-    
+
 #registerVoter method - get first and last name, license, party and create new registered voter
 def registerVoter():
-    userFirstName = (input("What is your first name?"))
-    userLastName = (input("What is your last name?"))
-    userLicense = int(input("What is your license number?"))
-    userParty = int(input("Which party do you support?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
-    userIsAdmin = False
-    newVoter = Voter()
-    newVoter.set_firstName(userFirstName)
-    newVoter.set_lastName(userLastName)
-    newVoter.set_licenseNumber(userLicense)
-    newVoter.set_party(userParty)
-    newVoter.set_isAdmin(userIsAdmin)
-    print(newVoter._firstName)
-    print(newVoter._lastName)
-    print(newVoter._licenseNumber)
-    print(newVoter._party)
-    voterSerialize(newVoter)
+    objs = loadObjects()
+    userLicense = int(input("What is your license number: "))
+    if(authenticateVoter(userLicense, objs)):
+        print("Already registered as voter!")
+    else:
+        userFirstName = (input("What is your first name: "))
+        userLastName = (input("What is your last name: "))
+        userParty = int(input("Which party do you support?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
+        userIsAdmin = False
+        newVoter = Voter(userFirstName, userLastName, userLicense, userParty, userIsAdmin)
+        objs.append(newVoter)
+        saveObjects(objs)
+        #newVoter.set_firstName(userFirstName)
+        #newVoter.set_lastName(userLastName)
+        #newVoter.set_licenseNumber(userLicense)
+        #newVoter.set_party(userParty)
+        #newVoter.set_isAdmin(userIsAdmin)
+        #print(newVoter._firstName)
+        #print(newVoter._lastName)
+        #print(newVoter._licenseNumber)
+        #print(newVoter._party)
+        #voterSerialize(newVoter)
 
 #authenticateVoter method - check if license number in obj file
-def authenticateVoter(license):
-    with open('registeredVoters.obj', 'rb') as out:
-        currVoter = pickle.load(out)  #Loops through voter objects from the file
-        if (int(currVoter.get_licenseNumber()) == int(license)):
-            print("Registered")
+def authenticateVoter(license, objs):
+    registeredUser = False
+    for obj in objs:
+        if (int(obj.get_licenseNumber()) == int(license)) and (obj.get_isAdmin() == False):
             registeredUser = True
-            return registeredUser
-        else:
-            registeredUser = False
-            
-    if(registeredUser == False):
-        print("Not registered")
+
+    return registeredUser 
+
+def loadObjects():
+    with open('registeredVoters.obj', 'rb') as out:
+        objs = pickle.load(out) 
+    return objs
         
+def saveObjects(objs):
+    filehandler = open('registeredVoters.obj', 'wb')
+    pickle.dump(objs, filehandler)
 
 #test VoterRegistrationCenter methods
        
 def unitTest():
     registerVoter()
     authenticateVoter(123456)
+
+
+#unitTest()
+
+def createDummyUser():
+    userLicense = int(input("What is your license number: "))
+    userFirstName = (input("What is your first name: "))
+    userLastName = (input("What is your last name: "))
+    userParty = int(input("Which party do you support?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
+    userIsAdmin = False
+    newVoter = Voter(userFirstName, userLastName, userLicense, userParty, userIsAdmin)
+    voterSerialize(newVoter)
+
+#createDummyUser()

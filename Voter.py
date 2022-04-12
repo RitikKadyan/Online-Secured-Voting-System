@@ -4,7 +4,7 @@ class Voter:
         self._firstName = firstName
         self._lastName = lastName
         self._licenseNumber = licenseNum
-        self._party = party   #0 is republican, 1 is democrat, 2 is other
+        self._party = party   #0 is democrat , 1 is republican, 2 is other
         self._isAdmin = isAdmin
     
     def get_firstName(self):
@@ -32,7 +32,7 @@ class Voter:
         self._party = x
 
     def get_isAdmin(self):
-        return self._firstName
+        return self._isAdmin
     
     def set_isAdmin(self, x):
         self._isAdmin = x
@@ -54,4 +54,4 @@ def unitTest():
     print(john._party)
     print(john._isAdmin)
 
-unitTest()
+#unitTest()
