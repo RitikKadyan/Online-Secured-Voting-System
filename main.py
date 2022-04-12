@@ -1,6 +1,7 @@
 import pickle
 from BallotCounter import BallotCounter
-from VoterRegistrationCenter import registerVoter, loadObjects, saveObjects
+from VoterRegistrationCenter import authenticateVoter, registerVoter, loadObjects, saveObjects
+from PollingSystem import askParty, hasVoted
 
 def adminMenu():
     adminInput = int(input("\n1: Ballot Counter\n2: Print all users and info\n3: Exit\nWhat would you like to do: "))
@@ -21,7 +22,33 @@ def userMenu():
         elif userInputForVoterRegistration == 2:
             print("Exiting...")
     elif userInput == 2:
+        userInputForPollingCenter =  int(input("\n1: Vote\n2: Exit\nWhat would you like to do: "))
+        if userInputForPollingCenter == 1:
+            try:
+                userLicense = int(input("\nEnter license: "))
+            except ValueError:
+                print("Please enter a number.")
+        
+        #Indiana license numbers are 10 digits long 
+            if  len(str(userLicense)) != 10:
+                raise Exception("Sorry, license number must only be 10 digits long")
+            
+            userExists = authenticateVoter(userLicense)
+            if userExists == True:
+                voted = hasVoted(userLicense)
+                if voted == True:
+                    print("You have already voted.")
+                else:
+                    askParty(userLicense)
+            else:
+                print("You must register as a voter first.")
+
+            
+        elif userInputForPollingCenter == 2:
+            print("Exiting...")
+    elif userInput == 3:
         print("Exiting...")
+
 
 def authenticateAdmin(license):
     isAdmin = False
@@ -60,12 +87,13 @@ def main():
 
 def printAll():
     objects = loadObjects()
-    for object in objects:
-        print(object.get_firstName())
-        print(object.get_lastName())
-        print(object.get_licenseNumber())
-        print(object.get_isAdmin())
+    for obj in objects:
+        print(obj.get_firstName())
+        print(obj.get_lastName())
+        print(obj.get_licenseNumber())
+        print(obj.get_party())
+        print(obj.get_isAdmin())
         print("\n")
 
     saveObjects(objects)
-printAll()
+#printAll()

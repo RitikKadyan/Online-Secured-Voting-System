@@ -16,16 +16,17 @@ def voterSerialize(registeredVoter):
 
 #registerVoter method - get first and last name, license, party and create new registered voter
 def registerVoter():
-    objs = loadObjects()
     userLicense = int(input("What is your license number: "))
-    if(authenticateVoter(userLicense, objs)):
+    if(authenticateVoter(userLicense)):
         print("Already registered as voter!")
     else:
         userFirstName = (input("What is your first name: "))
         userLastName = (input("What is your last name: "))
-        userParty = int(input("Which party do you support?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
+        #userParty = int(input("Which party do you support?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
         userIsAdmin = False
-        newVoter = Voter(userFirstName, userLastName, userLicense, userParty, userIsAdmin)
+        #passing in 4 for party because they have not voted yet
+        newVoter = Voter(userFirstName, userLastName, userLicense, 4, userIsAdmin)
+        objs = loadObjects()
         objs.append(newVoter)
         saveObjects(objs)
         #newVoter.set_firstName(userFirstName)
@@ -40,12 +41,14 @@ def registerVoter():
         #voterSerialize(newVoter)
 
 #authenticateVoter method - check if license number in obj file
-def authenticateVoter(license, objs):
+def authenticateVoter(license):
+    objs = loadObjects()
     registeredUser = False
     for obj in objs:
         if (int(obj.get_licenseNumber()) == int(license)) and (obj.get_isAdmin() == False):
             registeredUser = True
 
+    saveObjects(objs)
     return registeredUser 
 
 def loadObjects():

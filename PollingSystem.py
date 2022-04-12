@@ -6,41 +6,40 @@ Modification History:
 3/9/2022: File created and all function completed
 """
 
-import csv, pickle
-from VoterRegistrationCenter import voterSerialize
+import pickle
+from VoterRegistrationCenter import voterSerialize, saveObjects, loadObjects
 
 def isRegistered(license):
+	objs = loadObjects()	
 	userFound = False
-	with open('registeredVoters.obj', 'rb') as out:
-		currVoter = pickle.load(out)  #Loops through voter objects from the file
-		if (int(currVoter.get_licensenumber()) == int(license)):
+	for obj in objs:
+		if (int(obj.get_licensenumber()) == int(license)):
 			userFound = True
 
+	saveObjects(objs)
 	return userFound
 
-def hasVoted(license):	
+def hasVoted(license):
+	objs = loadObjects()	
 	hasVoted = False
-	with open('registeredVoters.obj', 'rb') as out:
-		currVoter = pickle.load(out)  #Loops through voter objects from the file
-		if (int(currVoter.get_licenseNumber()) == int(license)):
-			if currVoter.get_party() != 4:
+	for obj in objs:
+		if (int(obj.get_licenseNumber()) == int(license)):
+			if int(obj.get_party()) != 4:
 				hasVoted = True
 
+	saveObjects(objs)
 	return hasVoted
 
 def askParty(license):
-	userVote = int(input("Who would you like to vote for?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
+	userVote = int(input("\n1. Democratic Party\n2. Republican Party\n3. Other\nWho would you like to vote for: "))
 	setVote(license, userVote)								
 
 def setVote(license, vote):
-	with open('registeredVoters.obj', 'rb') as out:
-		currVoter = pickle.load(out)  #Loops through voter objects from the file
-		if (int(currVoter.get_licenseNumber()) == int(license)):
-			currVoter.set_party(vote)
-			voterSerialize(currVoter)
-			file = open('registeredVoters.obj', 'wb')
-			pickle.dump(currVoter, file)
-			file.close()
+	objs = loadObjects()
+	for obj in objs:
+		if (int(obj.get_licenseNumber()) == int(license)):
+			obj.set_party(vote)
+	saveObjects(objs)
 
 def main():
 	askParty(123456789)
