@@ -3,6 +3,18 @@ from BallotCounter import BallotCounter
 from VoterRegistrationCenter import authenticateVoter, registerVoter, loadObjects, saveObjects
 from PollingSystem import askParty, hasVoted
 
+def printAll():
+    objects = loadObjects()
+    for obj in objects:
+        print(obj.get_firstName())
+        print(obj.get_lastName())
+        print(obj.get_licenseNumber())
+        print(obj.get_party())
+        print(obj.get_isAdmin())
+        print("\n")
+
+    saveObjects(objects)
+
 def adminMenu():
     adminInput = int(input("\n1: Ballot Counter\n2: Print all users and info\n3: Exit\nWhat would you like to do: "))
     if adminInput == 1:
@@ -33,7 +45,16 @@ def userMenu():
             if  len(str(userLicense)) != 10:
                 raise Exception("Sorry, license number must only be 10 digits long")
             
-            userExists = authenticateVoter(userLicense)
+            try:
+                social = int(input("\nEnter last four digits of your social: "))
+            except ValueError:
+                print("Please enter a number.")
+
+            if  len(str(social)) != 4:
+                raise Exception("Sorry, social must only be 4 digits long")
+
+
+            userExists = authenticateVoter(userLicense, social)
             if userExists == True:
                 voted = hasVoted(userLicense)
                 if voted == True:
@@ -41,7 +62,7 @@ def userMenu():
                 else:
                     askParty(userLicense)
             else:
-                print("You must register as a voter first.")
+                print("Information is wrong! You must register as a voter first.")
 
             
         elif userInputForPollingCenter == 2:
@@ -52,12 +73,13 @@ def userMenu():
 
 def authenticateAdmin(license):
     isAdmin = False
-    with open('registeredVoters.obj', 'rb') as out:
-        currVoter = pickle.load(out)  #Loops through voter objects from the file
-        if (int(currVoter.get_licenseNumber()) == int(license)):
-            if currVoter.get_isAdmin() == True:
+    objs = loadObjects()
+    for obj in objs:
+        if (int(obj.get_licenseNumber()) == int(license)):
+            if obj.get_isAdmin() == True:
                 isAdmin = True
 
+    saveObjects(objs)
     return isAdmin
     
 
@@ -83,17 +105,8 @@ def main():
     elif adminOrUser == 3:
         print("Exiting...")
 
-#main()
+main()
 
-def printAll():
-    objects = loadObjects()
-    for obj in objects:
-        print(obj.get_firstName())
-        print(obj.get_lastName())
-        print(obj.get_licenseNumber())
-        print(obj.get_party())
-        print(obj.get_isAdmin())
-        print("\n")
 
-    saveObjects(objects)
 #printAll()
+

@@ -17,7 +17,8 @@ def voterSerialize(registeredVoter):
 #registerVoter method - get first and last name, license, party and create new registered voter
 def registerVoter():
     userLicense = int(input("What is your license number: "))
-    if(authenticateVoter(userLicense)):
+    userSocial = input("What are the last four digits of your social: ")
+    if(authenticateVoter(userLicense, userSocial)):
         print("Already registered as voter!")
     else:
         userFirstName = (input("What is your first name: "))
@@ -26,6 +27,7 @@ def registerVoter():
         userIsAdmin = False
         #passing in 4 for party because they have not voted yet
         newVoter = Voter(userFirstName, userLastName, userLicense, 4, userIsAdmin)
+        newVoter.set_social(userSocial)
         objs = loadObjects()
         objs.append(newVoter)
         saveObjects(objs)
@@ -41,12 +43,13 @@ def registerVoter():
         #voterSerialize(newVoter)
 
 #authenticateVoter method - check if license number in obj file
-def authenticateVoter(license):
+def authenticateVoter(license, social):
     objs = loadObjects()
     registeredUser = False
     for obj in objs:
-        if (int(obj.get_licenseNumber()) == int(license)) and (obj.get_isAdmin() == False):
+        if (int(obj.get_licenseNumber()) == int(license)) and (obj.get_isAdmin() == False) and (int(obj.get_social()) == social):
             registeredUser = True
+        
 
     saveObjects(objs)
     return registeredUser 
@@ -70,12 +73,15 @@ def unitTest():
 #unitTest()
 
 def createDummyUser():
-    userLicense = int(input("What is your license number: "))
-    userFirstName = (input("What is your first name: "))
-    userLastName = (input("What is your last name: "))
-    userParty = int(input("Which party do you support?\n1. Democratic Party\n2. Republican Party\n3. Other\n\nEnter 1, 2, or 3: "))
+    objs = loadObjects()
+    #objs = []
+    userLicense = int(1234567893)
+    userFirstName = ("User3")
+    userLastName = ("User3")
+    userParty = int(1)
     userIsAdmin = False
     newVoter = Voter(userFirstName, userLastName, userLicense, userParty, userIsAdmin)
-    voterSerialize(newVoter)
+    objs.append(newVoter)
+    saveObjects(objs)
 
 #createDummyUser()

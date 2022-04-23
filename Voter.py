@@ -37,6 +37,12 @@ class Voter:
     def set_isAdmin(self, x):
         self._isAdmin = x
 
+    def set_social(self, x):
+        self.__social = x
+
+    def get_social(self):
+        return self.__social
+
 
 
 def unitTest():
